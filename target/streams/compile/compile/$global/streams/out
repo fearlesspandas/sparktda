@@ -1,0 +1,10 @@
+[0m[[0m[31merror[0m] [0m[0m/home/jim/git/tda/src/main/scala/complex.scala:20:20: invalid string interpolation $', expected: $$, $identifier or ${expression}[0m
+[0m[[0m[31merror[0m] [0m[0m      .setMaster(s"local[$'spark.executor.instances']")[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/jim/git/tda/src/main/scala/complex.scala:20:52: unclosed character literal (or use " not ' for string literal)[0m
+[0m[[0m[31merror[0m] [0m[0m      .setMaster(s"local[$'spark.executor.instances']")[0m
+[0m[[0m[31merror[0m] [0m[0m                                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/jim/git/tda/src/main/scala/complex.scala:20:54: unclosed string literal[0m
+[0m[[0m[31merror[0m] [0m[0m      .setMaster(s"local[$'spark.executor.instances']")[0m
+[0m[[0m[31merror[0m] [0m[0m                                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0mthree errors found[0m
