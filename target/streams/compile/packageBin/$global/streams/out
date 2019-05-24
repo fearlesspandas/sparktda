@@ -4,10 +4,6 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/jim/git/tda/target/scala-2.12/classes/Simp/simplex.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	test$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/jim/git/tda/target/scala-2.12/classes/test$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	driver$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/jim/git/tda/target/scala-2.12/classes/driver$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	driver.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/jim/git/tda/target/scala-2.12/classes/driver.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	classify/Category.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/jim/git/tda/target/scala-2.12/classes/classify/Category.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	test.class[0m
@@ -18,8 +14,6 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/jim/git/tda/target/scala-2.12/classes/Simp[0m
 [0m[[0m[0mdebug[0m] [0m[0m	Driver.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/jim/git/tda/target/scala-2.12/classes/Driver.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	Simp/complex.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  /home/jim/git/tda/target/scala-2.12/classes/Simp/complex.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	Driver$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  /home/jim/git/tda/target/scala-2.12/classes/Driver$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	classify/NBC.class[0m

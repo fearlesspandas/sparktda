@@ -1,10 +1,21 @@
 package Simp
 import scala.collection.mutable.ArrayBuffer
 import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{Row, DataFrame, DataFrameWriter}
 // import org.apache.spark.sql.SQLContext.implicits._
 @SerialVersionUID(100L)
 class simplex (desc: Set[(Integer,Integer)]) extends Serializable {
+  val spark = SparkSession.builder().appName("appName").getOrCreate()
+  import spark.implicits._
+   def main(args: Array[String]): Unit = {
+     // val spark = SparkSession.builder()
+     // .master("local")
+     // .appName("example of SparkSession")
+     // .getOrCreate()
+     // SparkSession.builder()
+
+   }
   // def partition(de: Set[(Integer,Integer)]): ArrayBuffer[Set[Int]] = {
   //   var sims = ArrayBuffer[Set[Int]]()
   //   var n = 0
@@ -26,17 +37,18 @@ class simplex (desc: Set[(Integer,Integer)]) extends Serializable {
   // }
   def SimpDF(n: Integer ,dim: Integer): DataFrame =
     {
+
       // var n = 0
       // var subsimps = Set[Set[Int]]()
       // var S = Set((0 to dim)
       // n = n+dim+1
       val a = (0 to dim)
-      val df = a.toDF("0")
+      var df = a.toDF("0")
       for (x <- 1 to n*dim) {
              // var S = Set((n to n+dim).toArray:_*)
              // n = n+dim+1
              // subsimps += S
-             val tmp = df.withColumn(x.toString,col((x-1).toString) + 1)
+             val tmp = df.withColumn(x.toString, df((x-1).toString) + 1)
              df = tmp
            }
       return df
