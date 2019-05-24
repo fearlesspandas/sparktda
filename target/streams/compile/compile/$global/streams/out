@@ -1,7 +1,7 @@
-[0m[[0m[31merror[0m] [0m[0m/home/jim/git/tda/src/main/scala/complex.scala:22:21: value toDF is not a member of scala.collection.mutable.ArrayBuffer[Set[Int]][0m
-[0m[[0m[31merror[0m] [0m[0m    var Smplx = t.v.toDF[0m
-[0m[[0m[31merror[0m] [0m[0m                    ^[0m
-[0m[[0m[31merror[0m] [0m[0m/home/jim/git/tda/src/main/scala/simplex.scala:36:19: value toDF is not a member of Array[Simp.simplex][0m
-[0m[[0m[31merror[0m] [0m[0m    var Smplx = t.toDF[0m
-[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/jim/git/tda/src/main/scala/driver.scala:11:57: not found: value sc[0m
+[0m[[0m[31merror[0m] [0m[0m    val sqlContext= new org.apache.spark.sql.SQLContext(sc)[0m
+[0m[[0m[31merror[0m] [0m[0m                                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/jim/git/tda/src/main/scala/simplex.scala:34:18: value toDF is not a member of scala.collection.immutable.Range.Inclusive[0m
+[0m[[0m[31merror[0m] [0m[0m      val df = a.toDF("0")[0m
+[0m[[0m[31merror[0m] [0m[0m                 ^[0m
 [0m[[0m[31merror[0m] [0m[0mtwo errors found[0m
