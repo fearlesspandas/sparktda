@@ -33,12 +33,8 @@ class simplex (desc: Set[(Integer,Integer)]) extends Serializable {
         pwr(t, Set(Set.empty[A])) //Powerset of ∅ is {∅}
       }
   def power2(t: Array[simplex]): Unit = {
-    val conf = new SparkConf()
-      .setAppName("NBC")
-      .setMaster("local[2]")
-    val sc = new SparkContext(conf)
-    var Smplx = sc.parallelize(t)
+    var Smplx = t.toDF
     var Cmplx = Smplx.map(a => (a,a.power(Set(a.v))))
-    Cmplx.collect()
+    Cmplx.show
   }
 }

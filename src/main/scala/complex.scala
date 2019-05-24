@@ -15,15 +15,15 @@ class complex (S: simplex) extends Serializable {
         pwr(t, Set(Set.empty[A])) //Powerset of ∅ is {∅}
       }
   def power2(t: simplex): Unit = {
-    val conf = new SparkConf()
-      .setAppName("NBC")
-      .setMaster("local[4]")
-    val sc = new SparkContext(conf)
-    var Smplx = sc.parallelize(t.v)
+    // val conf = new SparkConf()
+    //   .setAppName("NBC")
+    //   .setMaster("local[4]")
+    //
+    var Smplx = t.v.toDF
     var Cmplx = Smplx.map(a => power[Int](a))
     var out = Cmplx.map(a => a.toArray)
     Cmplx.collect()
     //println(Cmplx.collect().foreach(println))
-    sc.stop()
+    
   }
 }
