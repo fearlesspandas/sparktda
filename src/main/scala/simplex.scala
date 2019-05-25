@@ -5,17 +5,18 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.{Row, DataFrame, DataFrameWriter}
 // import org.apache.spark.sql.SQLContext.implicits._
 @SerialVersionUID(100L)
-class simplex (desc: Set[(Integer,Integer)]) extends Serializable {
-  val spark = SparkSession.builder().appName("appName").getOrCreate()
+class simplex (desc: Set[(Integer,Integer)], spark: SparkSession) extends Serializable {
   import spark.implicits._
-   def main(args: Array[String]): Unit = {
-     // val spark = SparkSession.builder()
-     // .master("local")
-     // .appName("example of SparkSession")
-     // .getOrCreate()
-     // SparkSession.builder()
-
-   }
+  // val spark = SparkSession.builder().getOrCreate()
+  // import spark.implicits._
+  //  def main(args: Array[String]): Unit = {
+  //    // val spark = SparkSession.builder()
+  //    // .master("local")
+  //    // .appName("example of SparkSession")
+  //    // .getOrCreate()
+  //    // SparkSession.builder()
+  //
+  //  }
   // def partition(de: Set[(Integer,Integer)]): ArrayBuffer[Set[Int]] = {
   //   var sims = ArrayBuffer[Set[Int]]()
   //   var n = 0
@@ -48,7 +49,7 @@ class simplex (desc: Set[(Integer,Integer)]) extends Serializable {
              // var S = Set((n to n+dim).toArray:_*)
              // n = n+dim+1
              // subsimps += S
-             val tmp = df.withColumn(x.toString, df((x-1).toString) + 1)
+             var tmp = df.withColumn(x.toString, df((x-1).toString) + 1)
              df = tmp
            }
       return df
