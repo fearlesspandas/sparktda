@@ -49,7 +49,7 @@ class simplex (desc: Set[(Integer,Integer)], spark: SparkSession) extends Serial
              // var S = Set((n to n+dim).toArray:_*)
              // n = n+dim+1
              // subsimps += S
-             var tmp = df.withColumn(x.toString, df((x-1).toString) + 1)
+             val tmp = df.withColumn(x.toString, df((x-1).toString) + 1)
              df = tmp
            }
       return df

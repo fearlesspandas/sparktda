@@ -6,8 +6,8 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.mllib.classification.{NaiveBayes, NaiveBayesModel}
 import org.apache.spark.mllib.util.MLUtils
 object driver {
-  val spark = SparkSession.builder().getOrCreate()
-  import spark.implicits._
+  // val spark = SparkSession.builder().getOrCreate()
+  // import spark.implicits._
    def main(args: Array[String]): Unit = {
      // val spark = SparkSession.builder()
      // .master("local")
