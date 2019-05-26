@@ -1,4 +1,4 @@
 *.jar
-*/target/*
-*/data/*
-*/project/*
+target/*
+data/*
+project/*
