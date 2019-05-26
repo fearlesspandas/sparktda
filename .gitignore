@@ -1,3 +1,4 @@
 *.jar
 target/*
 data/*
+project/*
