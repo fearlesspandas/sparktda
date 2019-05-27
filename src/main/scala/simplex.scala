@@ -2,6 +2,7 @@ package Simp
 import scala.collection.mutable.ArrayBuffer
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{Row, DataFrame, DataFrameWriter}
 import org.apache.spark.mllib.linalg.{Matrices,Matrix}
 import org.apache.spark.mllib.linalg.distributed.BlockMatrix
@@ -14,7 +15,7 @@ class simplex (source: String, spark: SparkSession) extends Serializable {
   def load(filename: String): DataFrame = {
     return spark.read
          .format("csv")
-         .option("header", "false") //first line in file has headers
+         .option("header", "true") //first line in file has headers
          .option("mode", "DROPMALFORMED")
          .option("delimiter",",")
          .load(filename)
@@ -23,17 +24,9 @@ class simplex (source: String, spark: SparkSession) extends Serializable {
   var DF = load(source)
   def SimpDF(n: Integer ,dim: Integer): DataFrame =
     {
-
-      // var n = 0
-      // var subsimps = Set[Set[Int]]()
-      // var S = Set((0 to dim)
-      // n = n+dim+1
       val a = (0 to dim)
       var df = a.toDF("0")
       for (x <- 1 to n*dim) {
-             // var S = Set((n to n+dim).toArray:_*)
-             // n = n+dim+1
-             // subsimps += S
              val tmp = df.withColumn(x.toString, df((x-1).toString) + 1)
              df = tmp
            }
@@ -56,6 +49,13 @@ class simplex (source: String, spark: SparkSession) extends Serializable {
       }
       return t1
     }
+    def lor(v: Array[String]): DataFrame = {
+      val lor = filterCmplx(v).agg(min("ind")).withColumnRenamed("min(ind)","LOR")
+      val lorsimp = lor.join(DF).filter(DF("ind") === lor("LOR"))
+      val vv = ArrayBuffer(v:_*)
+      vv += "LOR"
+      return lorsimp.select(vv.head,vv.tail:_*)
+    }
     def mat(sc: SparkContext): BlockMatrix = {
       val E = Matrices.dense(2,2,Array(1,2,3,4))
       val D = Matrices.dense(2,2,Array(1,2,3,4))
@@ -63,18 +63,4 @@ class simplex (source: String, spark: SparkSession) extends Serializable {
       val bmat = new BlockMatrix(blocks,2,2)
       return bmat
     }
-  //val v = partition(desc)
-  // def power[A](t: Set[A]): Set[Set[A]] = {
-  //       @annotation.tailrec
-  //       def pwr(t: Set[A], ps: Set[Set[A]]): Set[Set[A]] =
-  //         if (t.isEmpty) ps
-  //         else pwr(t.tail, ps ++ (ps map (_ + t.head)))
-  //
-  //       pwr(t, Set(Set.empty[A])) //Powerset of ∅ is {∅}
-  //     }
-  // def power2(t: DataFrame): Unit = {
-  //   var Smplx = t
-  //   var Cmplx = Smplx.map(a => (a,a.power(Set(a))))
-  //   Cmplx.show
-  // }
 }

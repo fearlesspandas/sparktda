@@ -6,6 +6,9 @@ dim = int(sys.argv[3])
 f = open(filename,'w')
 w = csv.writer(f,delimiter = ',')
 for i in range(0,n):
-    r = [j%2 for j in range(0,dim)]
+    if(i==0):
+        r = ["v" + str(j) if(j!= 0) else "ind" for j in range(0,dim)]
+    else:
+        r = [j%2 if (j!= 0) else i for j in range(0,dim)]
     w.writerow(r)
 f.close()
