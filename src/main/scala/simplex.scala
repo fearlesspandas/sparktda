@@ -63,4 +63,43 @@ class simplex (source: String, spark: SparkSession) extends Serializable {
       val bmat = new BlockMatrix(blocks,2,2)
       return bmat
     }
+
+    def boundaryColFromInc(df:DataFrame): DataFrame = {
+      df.
+    }
+    def minInt(n:Int,m:Int):Int={
+      return if (n<=m) n else m
+    }
+    def choose(n:Int, k:Int):Int={
+      if (0<=k && k<=n){
+            var num=1
+            var den=1
+            var nn = n
+            for (t <- 1 to minInt(k,nn-k)+1){
+                num*=nn
+                den*=t
+                nn-=1
+            }
+            return num/den
+      }
+      else{
+          return 0
+        }
+    }
+    def subSimps(k:Int,s:Seq):DataFrame = {
+
+    }
+    def getSimpsK(k:Int,simp:DataFrame):DataFrame={
+      val cnt = simp.count
+      if(k<cnt){
+        val v = simp.select("v").map(_.getString(0)).collect.toList
+        val I = v.map(x => (v.indexOf(x),x.toString.toInt)).toDF("i","v")
+        //var d = Seq(1 to cnt.toInt:_*).map(x => if(x%2 == 0) 1 else -1).toDF("orientation")
+        return simp.join(I).filter(simp("v").equalTo(I("v"))).withColumn("or",when(col("i").mod(2).equalTo(0),lit(1)).otherwise(lit(-1)))
+
+
+
+    }
+    else{ return simp }
+    }
 }
