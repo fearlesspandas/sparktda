@@ -68,15 +68,50 @@ class simplex (source: String, spark: SparkSession) extends Serializable {
       return if (n<=m) n else m
     }
 
+    //bdry(s) => s_k-1
     def getBoundary(simp:DataFrame):DataFrame={
       val cnt = simp.count
 
         val v = simp.select("v").map(_.getString(0)).collect.toList
         val I = v.map(x => (v.indexOf(x),x.toString.toInt)).toDF("i","v")
         //var d = Seq(1 to cnt.toInt:_*).map(x => if(x%2 == 0) 1 else -1).toDF("orientation")
-        return simp.join(I).filter(simp("v").equalTo(I("v"))).withColumn("or",when(col("i").mod(2).equalTo(0),lit(1)).otherwise(lit(-1)))
-
-
-    
+        return simp.join(I,"v").withColumn("or",when(col("i").mod(2).equalTo(0),lit(1)).otherwise(lit(-1))).select("v","or")
     }
+    //row_v=>
+    //
+      //    col(S-v) = 1,-1,0 is added to dataframe
+      //
+    def simpnm(simp:DataFrame): String = {
+        var nm = simp.map("(" + _.getString(0) + ")").collect.toList
+        var name = ""
+        for(i <- 0 to nm.size - 1 ){
+          name +=nm(i)
+        }
+        return name
+    }
+    def iterBoundary(simp: DataFrame,baseDF: DataFrame):DataFrame = {
+      val v = simp.select("v").map(_.getString(0)).collect.toList
+      var cmplx = baseDF
+      val coldf = cmplx.columns.toSeq.toDF("column_name")
+      for(i <- 0 to v.size-1) {
+        //println("vertex removed:" + i.toString)
+        var s = simp.filter(!col("v").equalTo(v(i)))
+        var name = simpnm(s)
+        if(coldf.filter(col("column_name").equalTo(name)).count == 0){
+          val b = getBoundary(s).withColumnRenamed("or", name).withColumnRenamed("v","v_"+name)
+          //b.show
+          var tmp = cmplx.join(b,b("v_"+name)===cmplx("v"),"left_outer").drop("v_" + name)
+          cmplx = tmp
+          //println("total working complex")
+
+          //cmplx.show()
+          val tmp2 = if (s.count > 2) iterBoundary(s,cmplx) else cmplx
+          cmplx = tmp2
+        }
+      }
+
+//      val x = getBoundary(simp)
+      return cmplx
+    }
+
 }
