@@ -12,7 +12,7 @@ object driver {
   // import spark.implicits._
    def main(args: Array[String]): Unit = {
      println("This was printed by main")
-     val s = new simplex("/home/landon/git/sparktda/secondfile.csv",spark)
+     val s = new simplex("/home/jim/git/sparktda/secondfile.csv",spark)
      val D = s.DF
      D.show
      val simp = D.filter(col("d").equalTo(1)).select("v")
@@ -20,8 +20,8 @@ object driver {
      val out = s.iterBoundary(simp,s.getBoundary(simp))
      out.show
      println("Column Count: " + out.columns.size.toString)
-     out.columns.toSeq.toDF
-     out.write.mode("overwrite").option("header","true").csv("/home/landon/git/sparktda/out.csv")
+     out.write.mode("overwrite").option("header","true").csv("/data/out")
+     s.deltaK(out,2).show
      //simplex s_k => delta_k(s)
      //col(x in s_k) = 1 if  order(<x in (y: y in s_k-1))%2 == 0 else -1
     //base_df = s => Row(ds_1.vertexset,ds_1. col(s in s_k))

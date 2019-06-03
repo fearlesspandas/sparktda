@@ -108,10 +108,28 @@ class simplex (source: String, spark: SparkSession) extends Serializable {
           val tmp2 = if (s.count > 2) iterBoundary(s,cmplx) else cmplx
           cmplx = tmp2
         }
+
       }
 
 //      val x = getBoundary(simp)
       return cmplx
+    }
+    def writeAllCmplx(incmat: DataFrame,outdir: String): Unit = {
+      val cols = incmat.columns.toSeq
+      for (i <- 1 to cols.size -1 ){
+        var s = incmat.filter(col(cols(i)).equalTo(1)).select("v")
+        var cmplx = iterBoundary(s,getBoundary(s))
+        cmplx.write.mode("overwrite").option("header","true").csv(outdir + "/" + cols(i))
+      }
+    }
+    def deltaK(cmplx: DataFrame,k: Int) : DataFrame = {
+      val c = cmplx.columns.toSeq.toDF
+      val cc = c.map(row => (row.getString(0),row.getString(0).count(_==')') ))
+      val colseq = cc.filter(col("_2").equalTo(k)).select("_1").map(_.getString(0)).collect.toSeq
+      val colbuff = ArrayBuffer(colseq:_*)
+      colbuff += "v"
+      return cmplx.select(colbuff.map(name => col(name)):_*)
+
     }
 
 }
