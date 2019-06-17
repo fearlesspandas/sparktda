@@ -2,6 +2,7 @@ package Simp
 import scala.collection.mutable.ArrayBuffer
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.DataFrameNaFunctions
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{Row, DataFrame, DataFrameWriter}
 import org.apache.spark.mllib.linalg.{Matrices,Matrix}
@@ -56,10 +57,30 @@ class simplex (source: String, spark: SparkSession) extends Serializable {
       vv += "LOR"
       return lorsimp.select(vv.head,vv.tail:_*)
     }
-    def mat(sc: SparkContext): BlockMatrix = {
+    def ArrayFromDF(df: DataFrame): Array[Any] = { //returns one dimensional array representation of a df
+      val dim = df.columns.size
+      val n = df.count
+      val seq1 = df.columns.toSeq
+      val seq2 = Seq(1 to dim.toInt)
+      val nulUpdate = seq1.zip(seq2).flatMap(pair => Seq(pair._1,0))
+      val dfzero = df.na.fill(nullUpdate)
+      val rowarr = dfzero.collect.map(_.toSeq)
+      val rowbuff = ArrayBuffer(rowarr(0):_*)
+      for (i <- 1 to n.toInt -1){
+        rowbuff ++= (rowarr(i).map(x=>x.asInstanceOf[String].toInt))
+      }
+      return rowbuff.toArray
+    }
+    def matFromDF(dfseq: Seq[DataFrame],sc: SparkContext): BlockMatrix = {
       val E = Matrices.dense(2,2,Array(1,2,3,4))
-      val D = Matrices.dense(2,2,Array(1,2,3,4))
-      val blocks = sc.parallelize(Seq(((0,0),D),((0,1),E)))
+      val D = Matrices.dense(2,2,Array(5,6,7,8))
+      val DFarrs = dfseq.map(x=>ArrayFromDF(x))
+      val blocks = sc.parallelize(
+        Seq(
+          ((0,0),D),
+          ((1,0),E)
+        )
+      )
       val bmat = new BlockMatrix(blocks,2,2)
       return bmat
     }
@@ -74,7 +95,6 @@ class simplex (source: String, spark: SparkSession) extends Serializable {
 
         val v = simp.select("v").map(_.getString(0)).collect.toList
         val I = v.map(x => (v.indexOf(x),x.toString.toInt)).toDF("i","v")
-        //var d = Seq(1 to cnt.toInt:_*).map(x => if(x%2 == 0) 1 else -1).toDF("orientation")
         return simp.join(I,"v").withColumn("or",when(col("i").mod(2).equalTo(0),lit(1)).otherwise(lit(-1))).select("v","or")
     }
     //row_v=>
@@ -94,24 +114,17 @@ class simplex (source: String, spark: SparkSession) extends Serializable {
       var cmplx = baseDF
       val coldf = cmplx.columns.toSeq.toDF("column_name")
       for(i <- 0 to v.size-1) {
-        //println("vertex removed:" + i.toString)
         var s = simp.filter(!col("v").equalTo(v(i)))
         var name = simpnm(s)
         if(coldf.filter(col("column_name").equalTo(name)).count == 0){
           val b = getBoundary(s).withColumnRenamed("or", name).withColumnRenamed("v","v_"+name)
-          //b.show
           var tmp = cmplx.join(b,b("v_"+name)===cmplx("v"),"left_outer").drop("v_" + name)
           cmplx = tmp
-          //println("total working complex")
-
-          //cmplx.show()
           val tmp2 = if (s.count > 2) iterBoundary(s,cmplx) else cmplx
           cmplx = tmp2
         }
 
       }
-
-//      val x = getBoundary(simp)
       return cmplx
     }
     def writeAllCmplx(incmat: DataFrame,outdir: String): Unit = {
@@ -126,10 +139,13 @@ class simplex (source: String, spark: SparkSession) extends Serializable {
       val c = cmplx.columns.toSeq.toDF
       val cc = c.map(row => (row.getString(0),row.getString(0).count(_==')') ))
       val colseq = cc.filter(col("_2").equalTo(k)).select("_1").map(_.getString(0)).collect.toSeq
-      val colbuff = ArrayBuffer(colseq:_*)
-      colbuff += "v"
+      //val colbuff = ArrayBuffer(colseq:_*)
+      val colbuff = colseq:+"v"
+      //colbuff += "v"
       return cmplx.select(colbuff.map(name => col(name)):_*)
 
     }
+
+    //union all columns
 
 }

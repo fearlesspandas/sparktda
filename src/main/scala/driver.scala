@@ -15,12 +15,15 @@ object driver {
      val s = new simplex("/home/jim/git/sparktda/secondfile.csv",spark)
      val D = s.DF
      D.show
+     //here a simp is just the collection of it's vertices
+     //hence from the incidence matrix we can filter out for
+     //simplex d
      val simp = D.filter(col("d").equalTo(1)).select("v")
      s.getBoundary(simp).show
      val out = s.iterBoundary(simp,s.getBoundary(simp))
      out.show
      println("Column Count: " + out.columns.size.toString)
-     out.write.mode("overwrite").option("header","true").csv("/data/out")
+     out.write.mode("overwrite").option("header","true").csv("/data/out2")
      s.deltaK(out,2).show
      //simplex s_k => delta_k(s)
      //col(x in s_k) = 1 if  order(<x in (y: y in s_k-1))%2 == 0 else -1
